@@ -1,20 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const INITIAL_PASSWORD = "halloween";
-
+const INITIAL_PASSWORD = "ghostadmin";
+const HINT_DELAY = 120000; // 2 minutes
 const RIDDLES = [
-  {
-    question: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. I have roads, but no cars. What am I?",
-    answer: "map"
-  },
-  {
-    question: "The more I dry, the wetter I become. What am I?",
-    answer: "towel"
-  },
-  {
-    question: "What has keys, but no locks; space, but no room; and you can enter, but not go in?",
-    answer: "keyboard"
-  }
+    // {
+    //     question: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. I have roads, but no cars. What am I?",
+    //     answer: "map",
+    //     hint: "You might need me to find your way to the haunted house..."
+    // },
+    {
+        question: "Say my name, and I am no more.",
+    answer: "silence",
+        hint: "Think about what disappears when you speak..."
+    },
+    {
+        question: "Walk on the living, they don't even mumble. Walk on the dead, they mutter and grumble. What are they?",
+        answer: "zombies",
+        hint: "Think supernatural..."
+    },
+    {
+        question: "The person who built it sold it. The person who bought it never used it. The person who used it never saw it. What is it?",
+        answer: "coffin",
+        hint: "It's the last bed you'll ever need..."
+    },
 ];
 
 const GameScreen = () => {
@@ -22,6 +30,18 @@ const GameScreen = () => {
   const [currentRiddle, setCurrentRiddle] = useState(0);
   const [input, setInput] = useState('');
   const [message, setMessage] = useState('');
+  const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => {
+    if (gameState === 'riddles') {
+      setShowHint(false);
+      const timer = setTimeout(() => {
+        setShowHint(true);
+      }, HINT_DELAY); // 2 minutes
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentRiddle, gameState]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,7 +72,11 @@ const GameScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-gray-200 flex flex-col items-center justify-center p-4 font-[Creepster]">
+    <div className="min-h-screen bg-black text-gray-200 flex flex-col items-center justify-center p-4 font-[Creepster] relative">
+      <div className="absolute top-4 left-4 text-red-500 text-sm max-w-[200px] leading-tight">
+        please don't exit out of this window or try anything funny. the spirits will hate you
+      </div>
+
       {gameState === 'password' && (
         <div className="w-full max-w-md text-center space-y-8">
           <h1 className="text-3xl mb-8">Enter the Password</h1>
@@ -73,6 +97,11 @@ const GameScreen = () => {
         <div className="w-full max-w-md text-center space-y-8">
           <h2 className="text-2xl mb-8">Riddle {currentRiddle + 1}</h2>
           <p className="text-xl mb-8">{RIDDLES[currentRiddle].question}</p>
+          {showHint && (
+            <p className="text-yellow-500 text-sm mb-8 italic">
+              Hint: {RIDDLES[currentRiddle].hint}
+            </p>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
@@ -90,7 +119,8 @@ const GameScreen = () => {
 
       {gameState === 'complete' && (
         <div className="text-center">
-          <h1 className="text-5xl animate-pulse">Congratulations!</h1>
+          <h1 className="text-5xl animate-pulse">PUZZLE COMPLETED - NEXT CLUE:</h1>
+          <h1 className="text-5xl animate-pulse">SPECIMENS</h1>
         </div>
       )}
     </div>
