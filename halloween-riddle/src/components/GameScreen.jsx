@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const INITIAL_PASSWORD = "ghostadmin";
+const INITIAL_PASSWORD = "ghost";
 const HINT_DELAY = 120000; // 2 minutes
 const RIDDLES = [
     // {
@@ -9,18 +9,18 @@ const RIDDLES = [
     //     hint: "You might need me to find your way to the haunted house..."
     // },
     {
-        question: "Say my name, and I am no more.",
-    answer: "silence",
-        hint: "Think about what disappears when you speak..."
+        question: "What has a face and two hands but no arms or legs?",
+        answers: ["clock", "watch"],
+        hint: "Time is of the essence..."
     },
     {
-        question: "Walk on the living, they don't even mumble. Walk on the dead, they mutter and grumble. What are they?",
-        answer: "zombies",
-        hint: "Think supernatural..."
+        question: "What has many keys but can't open a single lock?",
+        answers: ["keyboard", "typewriter", "piano", "organ", "computer"],
+        hint: "🎶"
     },
     {
         question: "The person who built it sold it. The person who bought it never used it. The person who used it never saw it. What is it?",
-        answer: "coffin",
+        answers: ["coffin", "casket", "tombstone", "tomb", "grave"],
         hint: "It's the last bed you'll ever need..."
     },
 ];
@@ -43,6 +43,13 @@ const GameScreen = () => {
     }
   }, [currentRiddle, gameState]);
 
+  const checkAnswer = (userInput, validAnswers) => {
+    const normalizedInput = userInput.toLowerCase().trim();
+    return validAnswers.some(answer => 
+      normalizedInput.includes(answer.toLowerCase()) || answer.toLowerCase().includes(normalizedInput)
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -54,7 +61,7 @@ const GameScreen = () => {
         setMessage('Incorrect password...');
       }
     } else if (gameState === 'riddles') {
-      if (input.toLowerCase() === RIDDLES[currentRiddle].answer.toLowerCase()) {
+      if (checkAnswer(input, RIDDLES[currentRiddle].answers)) {
         setMessage('Correct!');
         setTimeout(() => {
           if (currentRiddle === RIDDLES.length - 1) {
@@ -74,12 +81,12 @@ const GameScreen = () => {
   return (
     <div className="min-h-screen bg-black text-gray-200 flex flex-col items-center justify-center p-4 font-[Creepster] relative">
       <div className="absolute top-4 left-4 text-red-500 text-sm max-w-[200px] leading-tight">
-        please don't exit out of this window or try anything funny. the spirits will hate you
+        please don't exit out of this window or try anything funny. the spirits will haunt you
       </div>
 
       {gameState === 'password' && (
         <div className="w-full max-w-md text-center space-y-8">
-          <h1 className="text-3xl mb-8">Enter the Password</h1>
+          {/* <h1 className="text-3xl mb-8">Enter the Password</h1> */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
@@ -119,8 +126,8 @@ const GameScreen = () => {
 
       {gameState === 'complete' && (
         <div className="text-center">
-          <h1 className="text-5xl animate-pulse">PUZZLE COMPLETED - NEXT CLUE:</h1>
-          <h1 className="text-5xl animate-pulse">SPECIMENS</h1>
+          <h1 className="text-5xl animate-pulse">ANSWER (AND NEXT CLUE):</h1>
+          <h1 className="text-5xl animate-pulse">GODEL ESCHER BACH 399</h1>
         </div>
       )}
     </div>

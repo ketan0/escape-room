@@ -26,7 +26,7 @@ print("Cipher Alphabet:", cipher_alphabet)
 cipher_alphabet = 'wnedopvthqfakbrlszxyimjugc'
 
 # Example usage
-plain_texts = ["jackolantern", "spiderweb", "skull", "witch", "broom", "illuminate"]
+plain_texts = ["eggshell", "string", "witch", "tin", "crumpled paper", "star", "glass", "vampire", "illuminatethetruth"]
 for plain_text in plain_texts:
     print("Plain Text:", plain_text)
     encoded_text = encode_text(plain_text, cipher_alphabet)
